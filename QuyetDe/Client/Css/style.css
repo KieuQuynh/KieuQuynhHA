@@ -1,0 +1,63 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+#result_no {
+    height: 34px;
+    background-color: #F44336;
+      width:50%;
+      border-radius: 8px 0 0 8px;
+    float:left;
+      line-height: 34px;
+color:#ffffff;
+}
+
+div#result_yes {
+    height: 34px;
+    background-color: blue;
+ width:50%;
+ border-radius: 0 8px 8px 0;
+   
+      float:left;
+      line-height: 34px;
+      color:#ffffff;
+}
+
+
+
+
+button.btn.btn-primary.btn-lg.nutbam {
+    display: block;
+    padding: 5px 28px;
+    margin: 10px 0px;
+}
+
+
+
+textarea#text {
+    margin-top: 41px;
+}
+
+h1.title {
+    font-size: 34px;
+}
+
+textarea#text {
+    border: 2px solid #666666;
+    resize: none;
+}
+
+textarea#text:focus {
+    border: 2px solid blue;
+}
+
+a.navbar-brand.logo {
+    font-size: 25px;
+    padding: 7px 8px;
+}
+
+a.nav-link.luachon {
+    font-size: 15px;
+    padding: 15px 10px;
+}
