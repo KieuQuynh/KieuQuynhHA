@@ -2,10 +2,10 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const QuestionModel = require('./models/questionModel');
+const ScoreModel = require('./models/questionModel');
 let app = express();
 
-mongoose.connect('mongodb://localhost/minihack', (err) => {
+mongoose.connect('mongodb://localhost/SaveScore', (err) => {
     if (err) console.log(err);
     else {
         console.log("DB connect");
@@ -15,36 +15,66 @@ app.use(express.static('./Views'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
     res.sendFile(path.resolve(__dirname, './Views/createGame.html'));
+
 })
-let p1;
-let p2;
-let p3;
-let p4;
-app.post('/games/hoangan', (req, res) => {
-    p1 = req.body.player1;
-    p2 = req.body.player2;
-    p3 = req.body.player3;
-    p4 = req.body.player4;
-    let x = {
-        name: [p1, p2, p3, p4]
+
+
+app.post('/namePlayer', (req, res) => {
+    const newMatch = {
+        name: [req.body.player1, req.body.player2, req.body.player3, req.body.player4],
 
     }
-    QuestionModel.create(x, (err, y) => {
+    ScoreModel.create(newMatch, (err, newMathCreated) => {
         if (err) throw err
         else {
-            app.get('/games/player', (req, res) => {
-                res.send({ id: y._id, player1: p1, player2: p2, player3: p3, player4: p4 });
-            })
-          //  res.sendFile(path.resolve(__dirname, './Views/playGame.html'));
-
+          res.redirect(`playGame.html?gameID=${newMathCreated._id}`);
         }
     })
-    // app.get('/games/player', (req, res) => {
-    //     res.send({ player1: p1, player2: p2, player3: p3, player4: p4 });
-    // })
-    res.sendFile(path.resolve(__dirname, './Views/playGame.html'));
+
 })
 
+
+
+app.put('/score', (req, res) => {
+    const { col, row, score, id } = req.body;
+  
+    ScoreModel.findById(id, (err, matchFound) => {
+        if (err) console.log("loiix đay nhé");
+        if (!matchFound) res.send({ message: 'not found match', match: null })
+        else {
+            let x = 'score' + col;
+          
+            if (matchFound.result[row] == null) {
+                let y = { score1: 0, score2: 0, score3: 0, score4: 0 };
+                y[x] = score;
+                matchFound.result.push(y);
+            }
+            else {
+                matchFound.result[row][x] = score;
+               
+        
+        
+            }
+            matchFound.save((err, matchUpdate) => {
+                if (err) throw err
+                else res.send({ message: 'Success', match: matchUpdate })
+            })
+        }
+
+     
+
+    })
+
+})
+
+app.post('/loaddata',(req,res)=>{
+    let id =req.body.gameID;
+    ScoreModel.findById(id,(err,matchFound)=>{
+        if(err) throw err;
+        else res.send(matchFound);
+    })
+
+})
 
 app.listen(8080, (err) => {
     if (err) throw err
